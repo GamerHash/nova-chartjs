@@ -31,7 +31,12 @@
         </select-control>
       </div>
     </div>
-    <line-chart v-if="!loading" :chart-data="datacollection" :options="options"></line-chart>
+    <line-chart
+      v-if="!loading"
+      :chart-data="datacollection"
+      :options="options"
+      :style="{ height: card.height && !['fixed', 'dynamic'].includes(card.height) ? card.height : 'auto' }"
+    />
   </loading-card>
 </template>
 
@@ -71,17 +76,7 @@ export default {
       chartTooltips: this.card.options.tooltips != undefined ? this.card.options.tooltips : undefined,
       sweetAlert: this.card.options.sweetAlert2 != undefined ? this.card.options.sweetAlert2 : undefined,
       chartPlugins: this.card.options.plugins != undefined ? this.card.options.plugins : false,
-      chartLayout:
-        this.card.options.layout != undefined
-          ? this.card.options.layout
-          : {
-              padding: {
-                left: 20,
-                right: 20,
-                top: 0,
-                bottom: 10,
-              },
-            },
+      chartLayout: this.card.options.layout != undefined ? this.card.options.layout : {},
       chartLegend:
         this.card.options.legend != undefined
           ? this.card.options.legend
