@@ -21,14 +21,11 @@
         </default-button>
         <select-control
           size="xxs"
-          @change="handleFilterChanged"
-          :selected="advanceFilterSelected"
+          :value="advanceFilterSelected"
+          :options="advanceFilter"
+          @selected="handleFilterChanged"
           v-show="showAdvanceFilter"
-        >
-          <option v-for="filter in advanceFilter" v-bind:value="filter.value" :key="filter.key">
-            {{ filter.text }}
-          </option>
-        </select-control>
+        />
       </div>
     </div>
     <line-chart
@@ -44,7 +41,7 @@
 import LineChart from '../bar-chart';
 import IconRefresh from './Icons/IconRefresh';
 import IconExternalLink from './Icons/IconExternalLink';
-import SelectControl from './Controls/SelectControl.vue';
+import SelectControl from '../../../vendor/laravel/nova/resources/js/components/Controls/SelectControl.vue';
 
 export default {
   components: {
@@ -58,12 +55,24 @@ export default {
 
     // setup btn filter list
     const btnFilterList = this.card.options.btnFilterList;
-    let filledAdvancedList = [];
-    let i = 0;
+    let advanceFilterOptions = [];
 
-    for (let index in btnFilterList) {
-      filledAdvancedList[i] = { value: index, text: btnFilterList[index] };
-      i++;
+    if (btnFilterList) {
+      // Przekształć na format oczekiwany przez SelectControl z Nova 5
+      advanceFilterOptions = Object.entries(btnFilterList).map(([value, text]) => ({
+        label: text,
+        value: value
+      }));
+    } else {
+      // Domyślne opcje jeśli nie podano btnFilterList
+      advanceFilterOptions = [
+        { label: 'Year to Date', value: 'YTD' },
+        { label: 'Quarter to Date', value: 'QTD' },
+        { label: 'Month to Date', value: 'MTD' },
+        { label: '30 Days', value: '30' },
+        { label: '60 Days', value: '60' },
+        { label: '365 Days', value: '365' },
+      ];
     }
 
     return {
@@ -98,17 +107,7 @@ export default {
           : false,
       advanceFilterSelected:
         this.card.options.btnFilterDefault != undefined ? this.card.options.btnFilterDefault : 'QTD',
-      advanceFilter:
-        this.card.options.btnFilterList != undefined
-          ? filledAdvancedList
-          : [
-              { text: 'Year to Date', value: 'YTD' },
-              { text: 'Quarter to Date', value: 'QTD' },
-              { text: 'Month to Date', value: 'MTD' },
-              { text: '30 Days', value: 30 },
-              { text: '60 Days', value: 60 },
-              { text: '365 Days', value: 365 },
-            ],
+      advanceFilter: advanceFilterOptions,
     };
   },
   computed: {
@@ -124,8 +123,10 @@ export default {
     reloadPage() {
       window.location.reload();
     },
-    handleFilterChanged(value) {
-      this.advanceFilterSelected = value;
+    handleFilterChanged(selectedOption) {
+      // selectedOption to obiekt { label: string, value: string|number } lub null
+      const selectedValue = selectedOption ? selectedOption.value : this.card.options.btnFilterDefault || 'QTD';
+      this.advanceFilterSelected = selectedValue;
       this.fillData();
     },
     fillData() {
