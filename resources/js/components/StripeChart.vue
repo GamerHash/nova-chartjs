@@ -42,14 +42,12 @@
 import LineChart from '../stripe-chart.vue';
 import IconRefresh from './Icons/IconRefresh';
 import IconExternalLink from './Icons/IconExternalLink';
-import SelectControl from '../../../vendor/laravel/nova/resources/js/components/Controls/SelectControl.vue';
 
 export default {
   components: {
     IconExternalLink,
     IconRefresh,
     LineChart,
-    SelectControl,
   },
   data() {
     this.card.options = this.card.options != undefined ? this.card.options : false;
