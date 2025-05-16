@@ -19,7 +19,7 @@
         >
           <icon-external-link />
         </default-button>
-        <select-control
+        <SelectControl
           size="xxs"
           :value="advanceFilterSelected"
           :options="advanceFilter"
@@ -49,7 +49,7 @@ export default {
     IconExternalLink,
     IconRefresh,
     LineChart,
-    'select-control': SelectControl,
+    SelectControl,
   },
   data() {
     this.card.options = this.card.options != undefined ? this.card.options : false;
